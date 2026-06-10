@@ -142,6 +142,46 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;
   <span>FADES</span><span>✦</span><span>DESIGNS</span><span>✦</span><span>BEARD WORK</span><span>✦</span><span>LINEUPS</span><span>✦</span><span>KIDS CUTS</span><span>✦</span><span>HOT TOWEL</span><span>✦</span>
 </div></div>
 
+<style>
+.story{position:relative;height:560vh;background:#0d0d0d;padding:0}
+.story-pin{position:sticky;top:0;height:100vh;overflow:hidden}
+#mkStoryCanvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.story-veil{position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at 68% 50%,transparent 32%,rgba(0,0,0,.72) 100%)}
+.story-wrap{position:absolute;inset:0;z-index:3;display:flex;align-items:center}
+.story-wrap .inner{max-width:1200px;margin:0 auto;padding:0 2.4rem;width:100%;position:relative}
+.sbeat{position:absolute;max-width:580px;opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.sbeat.in{opacity:1;transform:none}
+.sbeat .bk{font-family:'Anton',sans-serif;font-size:.95rem;letter-spacing:4px;text-transform:uppercase;color:#ff5a1f;margin-bottom:.7rem}
+.sbeat h2{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(3rem,7.5vw,6.5rem);line-height:.9;color:#f4f3ee;letter-spacing:0}
+.sbeat h2 span{color:#ff5a1f}
+.sbeat p{font-size:1.05rem;color:#b7b7b0;margin-top:1.1rem;line-height:1.65;max-width:430px}
+.sbrail{position:absolute;left:2.2rem;top:50%;transform:translateY(-50%);z-index:4;display:flex;flex-direction:column;gap:13px}
+.sbrail i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.22);transition:all .3s;display:block}
+.sbrail i.on{background:#ff5a1f;transform:scale(1.4)}
+@media(max-width:860px){
+  .story{height:auto}
+  .story-pin{position:relative;height:auto;overflow:visible}
+  #mkStoryCanvas{position:relative;width:100%;height:58vh;background:radial-gradient(circle at 50% 42%,#1a1a1a,#0a0a0a)}
+  .story-veil,.sbrail{display:none}
+  .story-wrap{position:relative;display:block}
+  .story-wrap .inner{padding:2.4rem 1.6rem}
+  .sbeat{position:relative;opacity:1;transform:none;max-width:none;padding:1.5rem 0;border-top:1px solid rgba(255,90,31,.25)}
+}
+</style>
+<section class="story" id="story">
+  <div class="story-pin">
+    <canvas id="mkStoryCanvas"></canvas>
+    <div class="story-veil"></div>
+    <div class="sbrail"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    <div class="story-wrap"><div class="inner">
+      <div class="sbeat in"><div class="bk">The Fade &middot; 01</div><h2>Sit <span>down.</span></h2><p>Walk-in or booked on Booksy &mdash; either way, let's get to work.</p></div>
+      <div class="sbeat"><div class="bk">The Fade &middot; 02</div><h2>Map the <span>guard.</span></h2><p>Every fade starts with a plan. We set the guards before the first pass.</p></div>
+      <div class="sbeat"><div class="bk">The Fade &middot; 03</div><h2>Blend it <span>out.</span></h2><p>Skin to scissor, no harsh lines &mdash; just a clean, seamless gradient.</p></div>
+      <div class="sbeat"><div class="bk">The Fade &middot; 04</div><h2>Detail the <span>edges.</span></h2><p>Crisp line-up, sharp corners, beard dialed. The part people remember.</p></div>
+      <div class="sbeat"><div class="bk">The Fade &middot; 05</div><h2>Fresh. <span>Done.</span></h2><p>Walk out looking exactly how you pictured it &mdash; sharper, actually.</p></div>
+    </div></div>
+  </div>
+</section>
 <section id="services"><div class="wrap">
   <div class="head"><div><div class="k">The Lineup</div><h2>Services</h2></div></div>
   <div class="srow"><div class="no">01</div><div class="nm">The Fade</div><div class="ds">Skin, low, mid or high — blended clean and tight.</div><div class="pr">$30</div></div>
@@ -262,6 +302,65 @@ footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;
 <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+window.addEventListener('load',function(){
+  if(!window.THREE)return;
+  var canvas=document.getElementById('mkStoryCanvas');if(!canvas)return;
+  var isMobile=window.matchMedia('(max-width:860px)').matches;
+  try{var _t=document.createElement('canvas');if(!(_t.getContext('webgl')||_t.getContext('experimental-webgl')))return;}catch(e){return;}
+  function size(){return {w:canvas.clientWidth||canvas.offsetWidth||800,h:canvas.clientHeight||canvas.offsetHeight||600};}
+  var d=size();
+  var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:!isMobile});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,isMobile?1.3:2));renderer.setSize(d.w,d.h,false);renderer.setClearColor(0x0d0d0d,1);
+  if('outputColorSpace' in renderer)renderer.outputColorSpace=THREE.SRGBColorSpace;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.08;
+  var scene=new THREE.Scene();scene.fog=new THREE.Fog(0x0d0d0d,12,36);
+  var cam=new THREE.PerspectiveCamera(42,d.w/d.h,0.1,140);
+  (function(){var c=document.createElement('canvas');c.width=32;c.height=256;var g=c.getContext('2d');var gr=g.createLinearGradient(0,0,0,256);gr.addColorStop(0,'#8e96a2');gr.addColorStop(0.46,'#15171c');gr.addColorStop(0.5,'#c2cad6');gr.addColorStop(0.54,'#101216');gr.addColorStop(1,'#070809');g.fillStyle=gr;g.fillRect(0,0,32,256);g.fillStyle='rgba(255,90,31,0.65)';g.fillRect(0,150,32,12);var tex=new THREE.CanvasTexture(c);tex.mapping=THREE.EquirectangularReflectionMapping;var pm=new THREE.PMREMGenerator(renderer);pm.compileEquirectangularShader();scene.environment=pm.fromEquirectangular(tex).texture;tex.dispose();pm.dispose();})();
+  var key=new THREE.DirectionalLight(0xffffff,1.6);key.position.set(-6,9,7);scene.add(key);
+  var rim=new THREE.PointLight(0xff5a1f,2.0,50);rim.position.set(5,1,4);scene.add(rim);
+  var fill=new THREE.DirectionalLight(0x6f86b0,0.5);fill.position.set(7,-3,5);scene.add(fill);
+  scene.add(new THREE.AmbientLight(0x222222,0.7));
+  var clip=new THREE.Group();
+  var bodyMat=new THREE.MeshStandardMaterial({color:0x171717,roughness:0.45,metalness:0.5,envMapIntensity:1.1});
+  var chrome=new THREE.MeshStandardMaterial({color:0xccd3dc,metalness:0.98,roughness:0.13,envMapIntensity:2.2});
+  var orange=new THREE.MeshStandardMaterial({color:0xff5a1f,roughness:0.4,metalness:0.2,emissive:0xff5a1f,emissiveIntensity:0.45});
+  var body=new THREE.Mesh(new THREE.BoxGeometry(1.25,3.1,0.92,2,2,2),bodyMat);body.castShadow=true;clip.add(body);
+  var stripe=new THREE.Mesh(new THREE.BoxGeometry(1.3,0.55,0.97),orange);stripe.position.y=0.5;clip.add(stripe);
+  var sw=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.16,0.99),chrome);sw.position.y=-0.2;clip.add(sw);
+  var head=new THREE.Mesh(new THREE.BoxGeometry(1.5,0.55,1.06),chrome);head.position.y=1.83;head.castShadow=true;clip.add(head);
+  var teeth=new THREE.Group();for(var i=0;i<11;i++){var tt=new THREE.Mesh(new THREE.BoxGeometry(0.1,0.34,0.12),chrome);tt.position.set(-0.62+i*0.124,2.2,0.5);teeth.add(tt);}clip.add(teeth);
+  var cap=new THREE.Mesh(new THREE.BoxGeometry(1.27,0.3,0.94),chrome);cap.position.y=-1.62;clip.add(cap);
+  var curve=new THREE.CatmullRomCurve3([new THREE.Vector3(0,-1.7,0),new THREE.Vector3(0.3,-2.6,-0.5),new THREE.Vector3(-0.8,-3.4,-1.4),new THREE.Vector3(-2.2,-3.0,-2.6)]);
+  var cord=new THREE.Mesh(new THREE.TubeGeometry(curve,28,0.1,10,false),new THREE.MeshStandardMaterial({color:0x111111,roughness:0.9}));clip.add(cord);
+  clip.rotation.set(-0.25,0.4,0.12);scene.add(clip);
+  function ss(a,b,x){x=(x-a)/(b-a);x=Math.max(0,Math.min(1,x));return x*x*(3-2*x);}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function applyCam(p){var ang=0.5+p*1.9;var cz=lerp(6,10.5,ss(0,1,p));var cy=lerp(-1,2.2,ss(0,1,p));cam.position.set(Math.sin(ang)*cz,cy,Math.cos(ang)*cz);cam.lookAt(0,0.2,0);}
+  var prog=0;
+  if(window.gsap&&window.ScrollTrigger&&!isMobile){
+    gsap.registerPlugin(ScrollTrigger);
+    var dots=document.querySelectorAll('.sbrail i'),beats=document.querySelectorAll('.sbeat');
+    ScrollTrigger.create({trigger:'.story',start:'top top',end:'bottom bottom',pin:'.story-pin',scrub:0.6,anticipatePin:1,invalidateOnRefresh:true,
+      onUpdate:function(self){prog=self.progress;var idx=Math.min(4,Math.floor(self.progress*5));
+        beats.forEach(function(b,i){b.classList.toggle('in',i===idx);});
+        dots.forEach(function(dt,i){dt.classList.toggle('on',i===idx);});}});
+    setTimeout(function(){ScrollTrigger.refresh();},500);
+  }
+  var vis=true;if('IntersectionObserver' in window)new IntersectionObserver(function(e){vis=e[0].isIntersecting;},{threshold:0.01}).observe(canvas);
+  var t0=performance.now();
+  function render(){requestAnimationFrame(render);if(!vis)return;
+    var tt=(performance.now()-t0)/1000;var p=prog;if(isMobile){p=((tt)%15)/15;}
+    clip.rotation.y=0.4+tt*0.18;
+    var buzz=Math.sin(tt*70)*0.012*(0.4+ss(0.2,0.8,p));clip.position.x=buzz;teeth.position.x=Math.sin(tt*80)*0.02;
+    orange.emissiveIntensity=0.35+ss(0,1,p)*0.5+Math.sin(tt*8)*0.05;
+    rim.intensity=1.6+ss(0.75,1,p)*1.6;
+    applyCam(p);renderer.render(scene,cam);}
+  addEventListener('resize',function(){var z=size();renderer.setSize(z.w,z.h,false);cam.aspect=z.w/z.h;cam.updateProjectionMatrix();},{passive:true});
+  render();
+});
+</script>
+
 <script>
 window.addEventListener('load',function(){
   var hasG=window.gsap&&window.ScrollTrigger;
